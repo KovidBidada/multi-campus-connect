@@ -96,7 +96,7 @@ export default function Navbar() {
                 onClick={handleGoogleSignUp}
                 className="bg-white text-blue-500 px-6 py-2 rounded-full shadow-md hover:bg-gray-200"
               >
-                Sign Up
+                Sign In
               </button>
             )
           )}
