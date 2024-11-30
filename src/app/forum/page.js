@@ -208,6 +208,7 @@ function ForumPage() {
                   className="bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-700 transition-all duration-300 ease-in-out mt-2"
                 >
                   Add Comment
+                  
                 </button>
               </form>
             )}
