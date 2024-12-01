@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { get, ref, set, push, update } from "firebase/database";
 import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import Firebase Auth
 import { db } from "../firebase/firebaseConfig";
+import { FaThumbsUp } from "react-icons/fa"; // Add icons for likes
 
 function ForumPage() {
   const [threads, setThreads] = useState([]);
@@ -11,6 +12,7 @@ function ForumPage() {
   const [newContent, setNewContent] = useState("");
   const [newComment, setNewComment] = useState("");
   const [currentUser, setCurrentUser] = useState(null); // Store the signed-in user
+  const [loading, setLoading] = useState(true); // Loading state
 
   // Fetch threads from Firebase
   useEffect(() => {
@@ -27,6 +29,7 @@ function ForumPage() {
         formattedThreads.sort((a, b) => b.likes - a.likes);
         setThreads(formattedThreads);
       }
+      setLoading(false); // Set loading to false after data is fetched
     };
 
     fetchThreads();
@@ -122,7 +125,7 @@ function ForumPage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1 className="text-4xl text-center mb-6 font-bold">Forum</h1>
+      <h1 className="text-4xl text-center mb-6 font-bold text-blue-700">Forum</h1>
 
       {/* New Thread Form */}
       {currentUser ? (
@@ -153,29 +156,37 @@ function ForumPage() {
           </button>
         </form>
       ) : (
-        <p className="text-center">You must be signed in to create a thread.</p>
+        <p className="text-center text-lg text-gray-600">You must be Signed In to create or interact with a thread.</p>
       )}
+
+      {/* Loading State */}
+      {loading && <div className="text-center text-gray-600">Loading threads...</div>}
 
       {/* List of Threads */}
       {threads.map((thread) => (
-        <div key={thread.id} className="mb-4 p-4 border border-gray-300 rounded-lg shadow-sm">
-          <p className="text-xl font-semibold">{thread.title}</p>
-          <p className="mb-2">{thread.content}</p>
+        <div
+          key={thread.id}
+          className="mb-4 p-6 border border-gray-300 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+        >
+          <p className="text-2xl font-semibold text-blue-700">{thread.title}</p>
+          <p className="text-gray-600 mb-2">{thread.content}</p>
           <p className="text-sm text-gray-500">Posted by: {thread.author}</p>
-          <p className="text-sm text-gray-500 mb-2">Likes: {thread.likes}</p>
+          <p className="text-sm text-gray-500 mb-4">Likes: {thread.likes}</p>
           {/* Like Button */}
           {currentUser && thread.likedBy?.includes(currentUser.uid) ? (
             <button
               disabled
               className="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-sm cursor-not-allowed"
             >
+              <FaThumbsUp className="inline mr-2" />
               Liked
             </button>
           ) : (
             <button
               onClick={() => handleLike(thread.id)}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-sm hover:bg-blue-700 transition-all duration-300 ease-in-out"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300 ease-in-out"
             >
+              <FaThumbsUp className="inline mr-2" />
               Like
             </button>
           )}
@@ -205,10 +216,9 @@ function ForumPage() {
                 />
                 <button
                   type="submit"
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-700 transition-all duration-300 ease-in-out mt-2"
+                  className="mt-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-green-700 transition-all duration-300 ease-in-out"
                 >
                   Add Comment
-                  
                 </button>
               </form>
             )}

@@ -1,6 +1,92 @@
-import React from "react";
+"use client"; // Make sure this is a client-side component in Next.js
 
-function CollaborationPage() {
+import React, { useState, useEffect } from "react";
+import { db, fs, auth } from "../firebase/firebaseConfig"; // Import the Firebase config
+import { collection, getDocs } from "firebase/firestore"; // Firestore functions
+import { ref, set, get } from "firebase/database"; // Realtime Database functions
+import { onAuthStateChanged } from "firebase/auth"; // To handle user auth state
+
+const CollaborationPage = () => {
+  const [user, setUser] = useState(null);
+  const [projects, setProjects] = useState([]);
+  const [newIdea, setNewIdea] = useState("");
+  const [submittedIdeas, setSubmittedIdeas] = useState([]); // New state to store submitted ideas
+
+  // Fetch Projects
+  const fetchProjects = async () => {
+    try {
+      // Firestore: Fetching projects collection from Firestore
+      const projectsCollection = collection(fs, "projects"); // Correct Firestore collection
+      const querySnapshot = await getDocs(projectsCollection);
+      const projectData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setProjects(projectData); // Set the fetched projects
+    } catch (error) {
+      console.error("Error fetching projects: ", error); // Error handling
+    }
+  };
+
+  // Fetch Submitted Ideas
+  const fetchSubmittedIdeas = async () => {
+    try {
+      // Firebase Realtime Database: Fetch submitted ideas
+      const ideasRef = ref(db, "projects"); // Reference to the projects node in Realtime Database
+      const snapshot = await get(ideasRef); // Get all data from the "projects" node
+      if (snapshot.exists()) {
+        const ideasData = snapshot.val();
+        const ideasArray = Object.keys(ideasData).map((key) => ({
+          id: key,
+          ...ideasData[key],
+        }));
+        setSubmittedIdeas(ideasArray); // Set the fetched submitted ideas
+      } else {
+        console.log("No ideas found.");
+      }
+    } catch (error) {
+      console.error("Error fetching submitted ideas: ", error); // Error handling
+    }
+  };
+
+  useEffect(() => {
+    // Listen for authentication state changes
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user); // Set user if logged in
+      } else {
+        setUser(null); // Clear user if logged out
+      }
+    });
+
+    fetchProjects(); // Fetch projects when the component mounts
+    fetchSubmittedIdeas(); // Fetch submitted ideas when the component mounts
+
+    return () => unsubscribe(); // Cleanup the listener on unmount
+  }, []);
+
+  const handleSubmitIdea = async (e) => {
+    e.preventDefault();
+    if (user && newIdea.trim()) {
+      try {
+        // Firebase Realtime Database: Store new idea
+        const projectRef = ref(db, "projects/" + new Date().getTime()); // Create a unique key
+        await set(projectRef, {
+          name: user.displayName || user.email, // User's name or email
+          idea: newIdea, // The project idea
+          timestamp: new Date().toISOString(), // Timestamp
+        });
+        setNewIdea(""); // Clear the idea input after submission
+        fetchSubmittedIdeas(); // Refresh the list of submitted ideas
+        alert("Project idea submitted successfully!");
+      } catch (error) {
+        console.error("Error submitting idea: ", error); // Error handling
+      }
+    } else {
+      alert("You need to be logged in and provide a valid idea!");
+    }
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto py-10 px-6">
@@ -20,19 +106,10 @@ function CollaborationPage() {
             Check out ongoing projects and find one that interests you. Collaborate with peers to bring innovative ideas to life.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Campus Directory App",
-                description: "A one-stop app for campus navigation and student resources.",
-              },
-              {
-                title: "Mental Health Support Platform",
-                description: "Connect students with counselors and peer mentors.",
-              },
-              {
-                title: "Event Management System",
-                description: "Simplify event planning and participation on campus.",
-              },
+            {[...projects, 
+              { title: "Campus Directory App", description: "A one-stop app for campus navigation and student resources." },
+              { title: "Mental Health Support Platform", description: "Connect students with counselors and peer mentors." },
+              { title: "Event Management System", description: "Simplify event planning and participation on campus." }
             ].map((project, index) => (
               <div
                 key={index}
@@ -55,7 +132,7 @@ function CollaborationPage() {
           <p className="text-gray-600 mb-6">
             Got an idea for a project? Share it with us, and we’ll help you find collaborators to make it a reality.
           </p>
-          <form className="bg-white p-6 rounded-lg shadow-md max-w-lg mx-auto">
+          <form className="bg-white p-6 rounded-lg shadow-md max-w-lg mx-auto" onSubmit={handleSubmitIdea}>
             <div className="mb-4">
               <label
                 htmlFor="name"
@@ -66,21 +143,8 @@ function CollaborationPage() {
               <input
                 type="text"
                 id="name"
-                placeholder="Enter your name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-gray-700 font-semibold mb-2"
-              >
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Enter your email"
+                value={user ? user.displayName || user.email : ""}
+                disabled
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -94,6 +158,8 @@ function CollaborationPage() {
               <textarea
                 id="idea"
                 placeholder="Describe your idea"
+                value={newIdea}
+                onChange={(e) => setNewIdea(e.target.value)}
                 rows="4"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               ></textarea>
@@ -107,37 +173,25 @@ function CollaborationPage() {
           </form>
         </section>
 
-        {/* Join a Team Section */}
-        <section>
+        {/* Display Submitted Ideas */}
+        <section className="mb-12">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            Join a Team
+            Submitted Ideas
           </h2>
           <p className="text-gray-600 mb-6">
-            Browse teams working on various projects and become a valuable contributor.
+            Here are the amazing ideas shared by fellow collaborators.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                team: "AI Enthusiasts",
-                description: "Focused on building intelligent solutions for real-world problems.",
-              },
-              {
-                team: "Creative Coders",
-                description: "A group of passionate developers bringing creative ideas to life.",
-              },
-              {
-                team: "Event Organizers",
-                description: "Managing and planning exciting events for the community.",
-              },
-            ].map((team, index) => (
+          <div className="space-y-6">
+            {submittedIdeas.map((idea, index) => (
               <div
                 key={index}
                 className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
                 <h3 className="text-lg font-bold text-blue-600 mb-2">
-                  {team.team}
+                  {idea.name}
                 </h3>
-                <p className="text-gray-700">{team.description}</p>
+                <p className="text-gray-700">{idea.idea}</p>
+                <p className="text-sm text-gray-500">{new Date(idea.timestamp).toLocaleString()}</p>
               </div>
             ))}
           </div>
@@ -145,6 +199,6 @@ function CollaborationPage() {
       </div>
     </div>
   );
-}
+};
 
 export default CollaborationPage;

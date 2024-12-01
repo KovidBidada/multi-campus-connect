@@ -1,4 +1,5 @@
 import React from "react";
+import { FaRegCalendarAlt } from "react-icons/fa"; // Import an icon for events
 
 function EventsPage() {
   const events = [
@@ -34,10 +35,11 @@ function EventsPage() {
         <h1 className="text-4xl font-bold text-blue-600 text-center mb-6">
           Events
         </h1>
-        <p className="text-gray-700 text-center mb-8">
+        <p className="text-gray-700 text-center mb-8 max-w-2xl mx-auto">
           Discover and participate in our exciting events, workshops, and
-          meetups.
+          meetups. Explore opportunities to learn and network.
         </p>
+        
         {/* Upcoming Events */}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
@@ -49,11 +51,14 @@ function EventsPage() {
               .map((event, index) => (
                 <div
                   key={index}
-                  className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                  className="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-all duration-300 ease-in-out transform hover:scale-105"
                 >
-                  <h3 className="text-xl font-bold text-blue-600 mb-2">
-                    {event.title}
-                  </h3>
+                  <div className="flex items-center mb-4">
+                    <FaRegCalendarAlt className="text-3xl text-blue-600" />
+                    <h3 className="ml-4 text-xl font-bold text-blue-600">
+                      {event.title}
+                    </h3>
+                  </div>
                   <p className="text-gray-600 text-sm mb-2">
                     <span className="font-semibold">Date:</span> {event.date}
                   </p>
@@ -62,7 +67,7 @@ function EventsPage() {
                     href={event.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-500 font-semibold hover:underline"
+                    className="inline-block text-white bg-blue-600 font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-all duration-200"
                   >
                     Register Now
                   </a>
@@ -70,6 +75,7 @@ function EventsPage() {
               ))}
           </div>
         </section>
+
         {/* Past Events */}
         <section>
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
@@ -81,11 +87,14 @@ function EventsPage() {
               .map((event, index) => (
                 <div
                   key={index}
-                  className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                  className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out"
                 >
-                  <h3 className="text-xl font-bold text-gray-600 mb-2">
-                    {event.title}
-                  </h3>
+                  <div className="flex items-center mb-4">
+                    <FaRegCalendarAlt className="text-3xl text-gray-600" />
+                    <h3 className="ml-4 text-xl font-bold text-gray-600">
+                      {event.title}
+                    </h3>
+                  </div>
                   <p className="text-gray-600 text-sm mb-2">
                     <span className="font-semibold">Date:</span> {event.date}
                   </p>
@@ -94,7 +103,7 @@ function EventsPage() {
                     href={event.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-500 font-semibold hover:underline"
+                    className="inline-block text-blue-600 font-semibold py-2 px-4 rounded-lg border border-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200"
                   >
                     View Details
                   </a>

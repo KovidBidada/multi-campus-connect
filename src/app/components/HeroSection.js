@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { auth } from "../firebase/firebaseConfig"; // Adjust path to your firebaseConfig
 import { onAuthStateChanged } from "firebase/auth";
 import Link from "next/link"; // Using Link component for navigation
+import { motion } from "framer-motion"; // Adding animation with Framer Motion
 
 export default function HeroSection() {
   const [user, setUser] = useState(null);
@@ -26,22 +27,62 @@ export default function HeroSection() {
   }
 
   return (
-    <div className="bg-blue-500 text-white py-20 text-center">
-      <div className="container mx-auto">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Campus Connect</h1>
+    <motion.div
+      className="bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 text-white py-20 text-center relative overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1.2 }}
+    >
+      {/* Floating shapes */}
+      <motion.div
+        className="absolute top-10 left-10 w-24 h-24 bg-white bg-opacity-20 rounded-full filter blur-lg"
+        animate={{ y: [0, 20, 0], scale: [1, 1.2, 1] }}
+        transition={{ duration: 6, repeat: Infinity }}
+      />
+      <motion.div
+        className="absolute bottom-10 right-10 w-16 h-16 bg-white bg-opacity-20 rounded-full filter blur-lg"
+        animate={{ x: [0, 15, 0], scale: [1, 0.8, 1] }}
+        transition={{ duration: 5, repeat: Infinity }}
+      />
+
+      <div className="container mx-auto px-6">
+        <motion.h1
+          className="text-5xl sm:text-6xl font-extrabold mb-6"
+          initial={{ y: -50 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          Welcome to Campus Connect
+        </motion.h1>
         {user ? (
-          <p className="text-4xl font-bold mb-4">Hello, {user.displayName}!</p>
+          <motion.p
+            className="text-2xl sm:text-3xl mb-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 1 }}
+          >
+            Hello, {user.displayName}! 🎉
+          </motion.p>
         ) : (
-          <p className="text-lg mb-6">
-            Connect, Collaborate, and Grow with your peers. Join the campus community now!
-          </p>
+          <motion.p
+            className="text-lg sm:text-xl mb-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 1 }}
+          >
+            Connect, Collaborate, and Grow with your peers. Join the campus
+            community now!
+          </motion.p>
         )}
-        <div className="flex justify-center">
-          <Link href="/features" className="bg-white text-blue-500 px-6 py-3 mx-2 rounded-full shadow-md hover:bg-gray-200">
+        <div className="flex justify-center space-x-4">
+          <Link
+            href="/features"
+            className="bg-white text-blue-500 px-8 py-3 rounded-full shadow-lg font-semibold hover:bg-gray-100 transform transition-all duration-300 hover:scale-105"
+          >
             Explore Features
           </Link>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

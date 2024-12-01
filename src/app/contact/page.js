@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import { db } from "../firebase/firebaseConfig"; // Use db for Realtime Database
+import { ref, set, push } from "firebase/database"; // Firebase Realtime Database functions
+import { toast } from "react-toastify"; // Optional for better user feedback
 
 function ContactPage() {
   const [formData, setFormData] = useState({
@@ -18,21 +21,45 @@ function ContactPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here, like sending data to a backend
-    setSubmitted(true);
-    setFormData({ name: "", email: "", message: "" });
+
+    // Debug: Check form data
+    console.log("Form Data: ", formData);
+
+    try {
+      // Send data to Firebase Realtime Database
+      const contactRef = ref(db, "contactMessages"); // 'contactMessages' is the path
+      const newContactRef = push(contactRef); // Use push() for generating a unique key
+      await set(newContactRef, {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        timestamp: new Date().toISOString(),
+      });
+
+      // Debug: Check document reference
+      console.log("Message sent to database with ID: ", newContactRef.key);
+
+      // Provide feedback to the user
+      setSubmitted(true);
+      toast.success("Message sent successfully!");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      toast.error("Error sending message. Please try again.");
+      console.error("Error sending data to Realtime Database: ", error);
+    }
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="container mx-auto py-10 px-6">
-        <h1 className="text-4xl font-bold text-blue-600 text-center mb-6">
+    <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex flex-col justify-center py-12 px-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
+        <h1 className="text-5xl font-extrabold text-gray-800 text-center mb-6">
           Contact Us
         </h1>
-        <p className="text-gray-700 text-center mb-8">
-          Have any questions or need support? Reach out to us using the form below, and we’ll get back to you as soon as possible.
+        <p className="text-xl text-gray-700 text-center mb-8">
+          Have any questions or need support? Reach out to us using the form
+          below, and we’ll get back to you as soon as possible.
         </p>
 
         {/* Contact Information */}
@@ -56,7 +83,7 @@ function ContactPage() {
             Send Us a Message
           </h2>
           <form
-            className="bg-white p-6 rounded-lg shadow-md max-w-lg mx-auto"
+            className="space-y-6 bg-white p-6 rounded-lg shadow-md"
             onSubmit={handleSubmit}
           >
             <div className="mb-4">
@@ -115,7 +142,7 @@ function ContactPage() {
             </div>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
             >
               Send Message
             </button>
