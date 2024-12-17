@@ -1,29 +1,29 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { auth } from "../firebase/firebaseConfig"; // Adjust path to your firebaseConfig
+import { auth } from "../firebase/firebaseConfig"; 
 import { onAuthStateChanged } from "firebase/auth";
-import Link from "next/link"; // Using Link component for navigation
-import { motion } from "framer-motion"; // Adding animation with Framer Motion
+import Link from "next/link"; 
+import { motion } from "framer-motion"; 
 
 export default function HeroSection() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // State to handle loading status
+  const [loading, setLoading] = useState(true);
 
-  // Listen to authentication state changes
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      setLoading(false); // Finished loading
+      setLoading(false); 
     });
 
-    // Cleanup the listener when the component is unmounted
+    
     return () => unsubscribe();
   }, []);
 
-  // Render nothing until the component is mounted on the client
+  
   if (loading) {
-    return null; // Avoid rendering until authentication is checked
+    return null; 
   }
 
   return (
@@ -33,7 +33,7 @@ export default function HeroSection() {
       animate={{ opacity: 1 }}
       transition={{ duration: 1.2 }}
     >
-      {/* Floating shapes */}
+     
       <motion.div
         className="absolute top-10 left-10 w-24 h-24 bg-white bg-opacity-20 rounded-full filter blur-lg"
         animate={{ y: [0, 20, 0], scale: [1, 1.2, 1] }}

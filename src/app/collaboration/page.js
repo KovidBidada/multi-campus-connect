@@ -1,91 +1,91 @@
-"use client"; // Make sure this is a client-side component in Next.js
+"use client";
 
 import React, { useState, useEffect } from "react";
-import { db, fs, auth } from "../firebase/firebaseConfig"; // Import the Firebase config
-import { collection, getDocs } from "firebase/firestore"; // Firestore functions
-import { ref, set, get } from "firebase/database"; // Realtime Database functions
-import { onAuthStateChanged } from "firebase/auth"; // To handle user auth state
+import { db, fs, auth } from "../firebase/firebaseConfig"; 
+import { collection, getDocs } from "firebase/firestore"; 
+import { ref, set, get } from "firebase/database"; 
+import { onAuthStateChanged } from "firebase/auth";
 
 const CollaborationPage = () => {
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState([]);
   const [newIdea, setNewIdea] = useState("");
-  const [submittedIdeas, setSubmittedIdeas] = useState([]); // New state to store submitted ideas
-
-  // Fetch Projects
+  const [submittedIdeas, setSubmittedIdeas] = useState([]); 
+  
   const fetchProjects = async () => {
     try {
-      // Firestore: Fetching projects collection from Firestore
-      const projectsCollection = collection(fs, "projects"); // Correct Firestore collection
+      
+      const projectsCollection = collection(fs, "projects"); 
       const querySnapshot = await getDocs(projectsCollection);
       const projectData = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       }));
-      setProjects(projectData); // Set the fetched projects
+      setProjects(projectData); 
     } catch (error) {
-      console.error("Error fetching projects: ", error); // Error handling
+      console.error("Error fetching projects: ", error); 
     }
   };
 
-  // Fetch Submitted Ideas
+  
   const fetchSubmittedIdeas = async () => {
     try {
-      // Firebase Realtime Database: Fetch submitted ideas
-      const ideasRef = ref(db, "projects"); // Reference to the projects node in Realtime Database
-      const snapshot = await get(ideasRef); // Get all data from the "projects" node
+     
+      const ideasRef = ref(db, "projects");
+      const snapshot = await get(ideasRef);
       if (snapshot.exists()) {
         const ideasData = snapshot.val();
         const ideasArray = Object.keys(ideasData).map((key) => ({
           id: key,
           ...ideasData[key],
         }));
-        setSubmittedIdeas(ideasArray); // Set the fetched submitted ideas
+        setSubmittedIdeas(ideasArray);
       } else {
         console.log("No ideas found.");
       }
     } catch (error) {
-      console.error("Error fetching submitted ideas: ", error); // Error handling
+      console.error("Error fetching submitted ideas: ", error);
     }
   };
 
   useEffect(() => {
-    // Listen for authentication state changes
+  
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUser(user); // Set user if logged in
+        setUser(user); 
       } else {
-        setUser(null); // Clear user if logged out
+        setUser(null); 
       }
     });
 
-    fetchProjects(); // Fetch projects when the component mounts
-    fetchSubmittedIdeas(); // Fetch submitted ideas when the component mounts
+    fetchProjects();
+    fetchSubmittedIdeas(); 
 
-    return () => unsubscribe(); // Cleanup the listener on unmount
+    return () => unsubscribe(); 
   }, []);
 
   const handleSubmitIdea = async (e) => {
     e.preventDefault();
     if (user && newIdea.trim()) {
       try {
-        // Firebase Realtime Database: Store new idea
-        const projectRef = ref(db, "projects/" + new Date().getTime()); // Create a unique key
+        
+        const projectRef = ref(db, "projects/" + new Date().getTime());
         await set(projectRef, {
-          name: user.displayName || user.email, // User's name or email
-          idea: newIdea, // The project idea
-          timestamp: new Date().toISOString(), // Timestamp
+          name: user.displayName || user.email, 
+          idea: newIdea, 
+          timestamp: new Date().toISOString(), 
         });
-        setNewIdea(""); // Clear the idea input after submission
-        fetchSubmittedIdeas(); // Refresh the list of submitted ideas
+        setNewIdea("");
+        fetchSubmittedIdeas();
         alert("Project idea submitted successfully!");
       } catch (error) {
-        console.error("Error submitting idea: ", error); // Error handling
+        console.error("Error submitting idea: ", error);
       }
     } else {
       alert("You need to be logged in and provide a valid idea!");
     }
   };
+
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -97,7 +97,6 @@ const CollaborationPage = () => {
           Join hands with like-minded individuals, explore exciting projects, and make an impact together!
         </p>
 
-        {/* Explore Projects Section */}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Explore Projects
@@ -124,7 +123,7 @@ const CollaborationPage = () => {
           </div>
         </section>
 
-        {/* Submit Your Ideas Section */}
+      
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Submit Your Ideas
@@ -173,7 +172,7 @@ const CollaborationPage = () => {
           </form>
         </section>
 
-        {/* Display Submitted Ideas */}
+       
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Submitted Ideas

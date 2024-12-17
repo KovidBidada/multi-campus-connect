@@ -2,19 +2,19 @@
 
 import React, { useEffect, useState } from "react";
 import { get, ref, set, push, update } from "firebase/database";
-import { getAuth, onAuthStateChanged } from "firebase/auth"; // Import Firebase Auth
+import { getAuth, onAuthStateChanged } from "firebase/auth"; 
 import { db } from "../firebase/firebaseConfig";
-import { FaThumbsUp } from "react-icons/fa"; // Add icons for likes
+import { FaThumbsUp } from "react-icons/fa"; 
 
 function ForumPage() {
   const [threads, setThreads] = useState([]);
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
   const [newComment, setNewComment] = useState("");
-  const [currentUser, setCurrentUser] = useState(null); // Store the signed-in user
-  const [loading, setLoading] = useState(true); // Loading state
+  const [currentUser, setCurrentUser] = useState(null); 
+  const [loading, setLoading] = useState(true); 
 
-  // Fetch threads from Firebase
+
   useEffect(() => {
     const fetchThreads = async () => {
       const dbRef = ref(db, "posts");
@@ -25,30 +25,30 @@ function ForumPage() {
           id: key,
           ...threadsData[key],
         }));
-        // Sort threads based on likes count (descending)
+       
         formattedThreads.sort((a, b) => b.likes - a.likes);
         setThreads(formattedThreads);
       }
-      setLoading(false); // Set loading to false after data is fetched
+      setLoading(false); 
     };
 
     fetchThreads();
 
-    // Check if the user is authenticated
+  
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user);
       } else {
-        setCurrentUser(null); // User is signed out
+        setCurrentUser(null); 
       }
     });
 
-    // Cleanup on component unmount
+   
     return () => unsubscribe();
   }, []);
 
-  // Handle new thread submission
+  
   const handleNewThreadSubmit = async (e) => {
     e.preventDefault();
 
@@ -57,23 +57,23 @@ function ForumPage() {
     const newThread = {
       title: newTitle,
       content: newContent,
-      likes: 0, // New thread starts with 0 likes
-      likedBy: [], // Array to track users who liked the thread
-      comments: {}, // No comments initially
-      author: currentUser.displayName || currentUser.email, // Add the author's name or email
+      likes: 0, 
+      likedBy: [], 
+      comments: {}, 
+      author: currentUser.displayName || currentUser.email, 
     };
 
-    // Push the new thread to Firebase
+   
     const threadsRef = ref(db, "posts");
     const newThreadRef = push(threadsRef);
     await set(newThreadRef, newThread);
 
-    // Clear form fields
+   
     setNewTitle("");
     setNewContent("");
   };
 
-  // Handle Like button click
+ 
   const handleLike = async (threadId) => {
     if (!currentUser) return;
 
@@ -84,17 +84,17 @@ function ForumPage() {
       const likedBy = threadData.likedBy || [];
       const currentLikes = threadData.likes || 0;
 
-      // Check if the user has already liked the thread
+     
       if (!likedBy.includes(currentUser.uid)) {
         const newLikes = currentLikes + 1;
 
-        // Update the like count and likedBy array in Firebase
+        
         await update(threadRef, {
           likes: newLikes,
-          likedBy: [...likedBy, currentUser.uid], // Add the user's UID to likedBy
+          likedBy: [...likedBy, currentUser.uid], 
         });
 
-        // Optimistically update local state
+        
         setThreads((prevThreads) =>
           prevThreads.map((thread) =>
             thread.id === threadId
@@ -106,7 +106,7 @@ function ForumPage() {
     }
   };
 
-  // Handle comment submission
+
   const handleNewCommentSubmit = async (threadId, e) => {
     e.preventDefault();
     if (!newComment.trim() || !currentUser) return;
@@ -116,10 +116,10 @@ function ForumPage() {
     const newCommentRef = push(threadRef);
     await set(newCommentRef, {
       content: comment,
-      author: currentUser.displayName || currentUser.email, // Store the author's name
+      author: currentUser.displayName || currentUser.email, 
     });
 
-    // Clear comment field
+    
     setNewComment("");
   };
 
@@ -127,7 +127,6 @@ function ForumPage() {
     <div className="container mx-auto px-4 py-6">
       <h1 className="text-4xl text-center mb-6 font-bold text-blue-700">Forum</h1>
 
-      {/* New Thread Form */}
       {currentUser ? (
         <form onSubmit={handleNewThreadSubmit} className="mb-8 space-y-4">
           <div className="relative">
@@ -159,10 +158,10 @@ function ForumPage() {
         <p className="text-center text-lg text-gray-600">You must be Signed In to create or interact with a thread.</p>
       )}
 
-      {/* Loading State */}
+    
       {loading && <div className="text-center text-gray-600">Loading threads...</div>}
 
-      {/* List of Threads */}
+     
       {threads.map((thread) => (
         <div
           key={thread.id}
@@ -172,7 +171,7 @@ function ForumPage() {
           <p className="text-gray-600 mb-2">{thread.content}</p>
           <p className="text-sm text-gray-500">Posted by: {thread.author}</p>
           <p className="text-sm text-gray-500 mb-4">Likes: {thread.likes}</p>
-          {/* Like Button */}
+       
           {currentUser && thread.likedBy?.includes(currentUser.uid) ? (
             <button
               disabled
@@ -191,7 +190,7 @@ function ForumPage() {
             </button>
           )}
 
-          {/* Display Comments */}
+         
           <div className="mt-4">
             <h3 className="text-lg font-semibold">Comments:</h3>
             {Object.values(thread.comments || {}).map((comment, index) => (
@@ -201,7 +200,7 @@ function ForumPage() {
               </div>
             ))}
 
-            {/* New Comment Form */}
+            
             {currentUser && (
               <form
                 onSubmit={(e) => handleNewCommentSubmit(thread.id, e)}

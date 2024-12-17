@@ -1,17 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { auth, googleProvider } from "../firebase/firebaseConfig"; // Adjust path to your firebaseConfig
+import { auth, googleProvider } from "../firebase/firebaseConfig";
 import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
-import Link from "next/link"; // Using Link component for navigation
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isOpen, setIsOpen] = useState(false); // State for mobile menu
+  const [isOpen, setIsOpen] = useState(false); 
 
-  // Listen to authentication state changes
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -47,7 +47,7 @@ export default function Navbar() {
   return (
     <nav className="bg-blue-600 text-white shadow-lg">
       <div className="container mx-auto flex justify-between items-center py-4 px-6">
-        {/* Logo */}
+       
         <motion.h1
           className="text-2xl md:text-3xl font-extrabold cursor-pointer"
           initial={{ opacity: 0, x: -50 }}
@@ -56,7 +56,7 @@ export default function Navbar() {
           Campus Connect
         </motion.h1>
 
-        {/* Hamburger Icon for Mobile */}
+        
         <div className="md:hidden flex items-center">
           <button onClick={toggleMenu} className="text-white focus:outline-none">
             <svg
@@ -76,7 +76,7 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Desktop Menu Links */}
+
         <ul className="hidden md:flex space-x-6">
           {["Home", "Forum", "Resource", "Event", "Collaboration", "Contact"].map(
             (item, index) => (
@@ -93,7 +93,7 @@ export default function Navbar() {
           )}
         </ul>
 
-        {/* Sign-in/Sign-out button */}
+       
         <div className="flex items-center space-x-4">
           {isLoading ? (
             <motion.p
@@ -123,7 +123,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+   
       <AnimatePresence>
         {isOpen && (
           <motion.div

@@ -1,5 +1,5 @@
 import React from "react";
-import { FaRegCalendarAlt } from "react-icons/fa"; // Import an icon for events
+import { FaRegCalendarAlt } from "react-icons/fa"; 
 
 function EventsPage() {
   const events = [
@@ -40,7 +40,7 @@ function EventsPage() {
           meetups. Explore opportunities to learn and network.
         </p>
         
-        {/* Upcoming Events */}
+        
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
             Upcoming Events
@@ -76,7 +76,7 @@ function EventsPage() {
           </div>
         </section>
 
-        {/* Past Events */}
+   
         <section>
           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
             Past Events

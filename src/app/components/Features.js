@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 
 function AboutUsSection() {
-  // Animation variants
+
   const cardVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -14,7 +14,7 @@ function AboutUsSection() {
   return (
     <div className="bg-gradient-to-b from-blue-100 to-blue-300 py-16">
       <div className="container mx-auto px-6 text-center">
-        {/* Section Title */}
+      
         <motion.h2
           className="text-4xl font-extrabold text-blue-700 mb-4"
           initial={{ opacity: 0, y: -20 }}
@@ -24,7 +24,7 @@ function AboutUsSection() {
           What We're About
         </motion.h2>
 
-        {/* Section Description */}
+       
         <motion.p
           className="text-gray-800 max-w-2xl mx-auto text-lg mb-8"
           initial={{ opacity: 0, y: 20 }}
@@ -37,9 +37,9 @@ function AboutUsSection() {
           shared, knowledge is exchanged, and opportunities are created.
         </motion.p>
 
-        {/* Cards */}
+       
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Card 1 */}
+         
           <motion.div
             className="bg-white p-6 rounded-lg shadow-lg"
             variants={cardVariants}
@@ -62,7 +62,7 @@ function AboutUsSection() {
             </p>
           </motion.div>
 
-          {/* Card 2 */}
+          
           <motion.div
             className="bg-white p-6 rounded-lg shadow-lg"
             variants={cardVariants}
@@ -85,7 +85,7 @@ function AboutUsSection() {
             </p>
           </motion.div>
 
-          {/* Card 3 */}
+          
           <motion.div
             className="bg-white p-6 rounded-lg shadow-lg"
             variants={cardVariants}
@@ -111,7 +111,7 @@ function AboutUsSection() {
           </motion.div>
         </div>
 
-        {/* Call-to-Action Button */}
+      
         <motion.div
           className="mt-8"
           initial={{ opacity: 0, scale: 0.8 }}

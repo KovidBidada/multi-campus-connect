@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { db } from "../firebase/firebaseConfig"; // Use db for Realtime Database
-import { ref, set, push } from "firebase/database"; // Firebase Realtime Database functions
-import { toast } from "react-toastify"; // Optional for better user feedback
+import { db } from "../firebase/firebaseConfig"; 
+import { ref, set, push } from "firebase/database"; 
+import { toast } from "react-toastify"; 
 
 function ContactPage() {
   const [formData, setFormData] = useState({
@@ -24,13 +24,13 @@ function ContactPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Debug: Check form data
+ 
     console.log("Form Data: ", formData);
 
     try {
-      // Send data to Firebase Realtime Database
-      const contactRef = ref(db, "contactMessages"); // 'contactMessages' is the path
-      const newContactRef = push(contactRef); // Use push() for generating a unique key
+      
+      const contactRef = ref(db, "contactMessages"); 
+      const newContactRef = push(contactRef); 
       await set(newContactRef, {
         name: formData.name,
         email: formData.email,
@@ -38,10 +38,10 @@ function ContactPage() {
         timestamp: new Date().toISOString(),
       });
 
-      // Debug: Check document reference
+     
       console.log("Message sent to database with ID: ", newContactRef.key);
 
-      // Provide feedback to the user
+
       setSubmitted(true);
       toast.success("Message sent successfully!");
       setFormData({ name: "", email: "", message: "" });
@@ -62,7 +62,7 @@ function ContactPage() {
           below, and we’ll get back to you as soon as possible.
         </p>
 
-        {/* Contact Information */}
+      
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Contact Information
@@ -77,7 +77,7 @@ function ContactPage() {
           </ul>
         </section>
 
-        {/* Contact Form */}
+      
         <section>
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Send Us a Message
@@ -148,7 +148,7 @@ function ContactPage() {
             </button>
           </form>
 
-          {/* Confirmation Message */}
+          
           {submitted && (
             <div className="mt-6 text-center text-green-600">
               <p>Thank you for reaching out! We will get back to you shortly.</p>
