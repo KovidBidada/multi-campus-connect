@@ -151,7 +151,8 @@ function ContactPage() {
           
           {submitted && (
             <div className="mt-6 text-center text-green-600">
-              <p>Thank you for reaching out! We will get back to you shortly.</p>
+              <br>
+            <p>Thank you for reaching out! We will get back to you shortly.</p>
             </div>
           )}
         </section>
