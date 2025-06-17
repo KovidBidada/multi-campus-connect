@@ -103,7 +103,7 @@ function Footer() {
           <p>
             Made with ❤️ by the Campus Connect Team.
             <br/>
-            (Mustafa Rayyan Farhan)
+            (Ashay Kovid)
           </p>
         </div>
       </div>
