@@ -80,6 +80,7 @@ function ExploreFeaturesPage() {
                 <div className="mt-4 text-gray-100">
                   <p className="mb-2">{feature.description}</p>
                   <p className="text-sm">{feature.details}</p>
+                <br>
                 </div>
               )}
             </div>
