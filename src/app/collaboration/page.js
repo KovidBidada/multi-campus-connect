@@ -189,6 +189,7 @@ const CollaborationPage = () => {
                 <h3 className="text-lg font-bold text-blue-600 mb-2">
                   {idea.name}
                 </h3>
+                  <br>
                 <p className="text-gray-700">{idea.idea}</p>
                 <p className="text-sm text-gray-500">{new Date(idea.timestamp).toLocaleString()}</p>
               </div>
