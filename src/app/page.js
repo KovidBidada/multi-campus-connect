@@ -9,7 +9,7 @@ function App() {
     <div className="bg-gray-100 min-h-screen">
       <HeroSection />
       <Features />
-    </div>
+    <br></div>
   );
 }
 
