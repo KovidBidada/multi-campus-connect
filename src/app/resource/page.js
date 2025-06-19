@@ -130,7 +130,7 @@ function ResourcesPage() {
                       rel="noopener noreferrer"
                       className="text-blue-500 font-semibold hover:underline transition-all duration-300"
                     >
-                      Visit Site
+                      Visit Site<br>
                     </a>
                   </li>
                 ))}
