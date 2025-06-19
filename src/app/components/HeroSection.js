@@ -61,7 +61,7 @@ export default function HeroSection() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
           >
-            Hello, {user.displayName}! 🎉
+            Hello, {user.displayName}! 🎉<br>
           </motion.p>
         ) : (
           <motion.p
