@@ -57,7 +57,7 @@ export default function Navbar() {
         </motion.h1>
 
         
-        <div className="md:hidden flex items-center">
+        <div className="md:hidden flex items-center"><br>
           <button onClick={toggleMenu} className="text-white focus:outline-none">
             <svg
               className="w-6 h-6"
