@@ -105,7 +105,7 @@ function EventsPage() {
                     rel="noopener noreferrer"
                     className="inline-block text-blue-600 font-semibold py-2 px-4 rounded-lg border border-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-200"
                   >
-                    View Details
+                    View Details<br>
                   </a>
                 </div>
               ))}
