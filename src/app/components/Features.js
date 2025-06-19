@@ -13,7 +13,8 @@ function AboutUsSection() {
 
   return (
     <div className="bg-gradient-to-b from-blue-100 to-blue-300 py-16">
-      <div className="container mx-auto px-6 text-center">
+      <div className="container mx-auto px-6 text-center"><br>
+    
       
         <motion.h2
           className="text-4xl font-extrabold text-blue-700 mb-4"
